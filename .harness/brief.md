@@ -2,7 +2,7 @@
 
 ## Product Scope
 
-LidGuard is a macOS menu-bar utility that keeps a MacBook running with the lid
+LidStay is a macOS menu-bar utility that keeps a MacBook running with the lid
 closed — but only for the session the user explicitly asks for.
 
 The problem it solves: with a long job running (a build, a download, a render,
@@ -48,7 +48,7 @@ Sys (enum)                  IOKit reads (lid, SleepDisabled, battery)
 - **System layer** — all privileged or kernel-facing work is isolated in `Sys`.
   Everything else is pure Swift.
 
-**The state file** (`~/.config/lidguard/armed`) is the one piece of shared
+**The state file** (`~/.config/lidstay/armed`) is the one piece of shared
 state. It holds `armed-open` or `armed-closed`. An external watchdog reads it
 to distinguish *the user just pressed the button* (lid still open — do nothing)
 from *the app died after the lid shut* (lid open again — disarm on its behalf).
@@ -62,7 +62,7 @@ watchdog disarm you the moment you arm.
 - **Minimum OS**: macOS 13 (for `MenuBarExtra`).
 - **Frameworks**: SwiftUI, AppKit, IOKit (`IOPMrootDomain` properties),
   IOKit.ps (battery).
-- **Build**: `make` → `build/LidGuard.app` (ad-hoc signed). `make install`
+- **Build**: `make` → `build/LidStay.app` (ad-hoc signed). `make install`
   copies to `~/Applications`.
 - **Privilege**: one scoped `/etc/sudoers.d/` rule permitting two literal
   `pmset -a disablesleep` invocations. No helper daemon, no XPC, no kext.
@@ -92,6 +92,6 @@ watchdog disarm you the moment you arm.
    `armedClosed`.
 3. **The sudoers grant stays two literal commands.** No wildcards, no
    `pmset` subcommand beyond `-a disablesleep 0/1`, no generic `NOPASSWD: pmset`.
-4. **No process is ever killed or signalled.** LidGuard governs the machine's
+4. **No process is ever killed or signalled.** LidStay governs the machine's
    sleep flag; it does not manage other applications' lifecycles.
 5. **No network.** The app must not make outbound connections.

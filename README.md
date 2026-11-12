@@ -1,183 +1,171 @@
-# LidGuard
-
-**Keep your MacBook working with the lid closed — but only for the one trip you ask for.**
-
-A tiny macOS menu-bar app. Click it, close the lid, put the machine in your bag, and your job keeps running. Open the lid when you arrive and normal sleep comes straight back.
-
-```
-lid close → sleep        (default, safe)
-lid close → keep running (only while armed)
-```
-
-[中文说明](README.zh-CN.md) · MIT · macOS 13+
+<p align="center"><img src="docs/images/lidstay-mark.png" alt="" width="96" height="96"></p>
+<h1 align="center"><a href="https://github.com/TTT-qq-TT/lidstay">LidStay</a></h1>
+<p align="center"><strong>Keep the lid closed. Keep the job running.</strong></p>
+<p align="center">
+  A macOS menu-bar app that holds off lid-close sleep for one deliberate trip,<br>
+  then restores normal sleep the moment you open the lid.
+</p>
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-17181A?style=flat-square" alt="MIT License"></a>
+  <img src="https://img.shields.io/badge/macOS-13%2B-17181A?style=flat-square&logo=apple&logoColor=F2F3F5" alt="macOS 13 or later">
+  <img src="https://img.shields.io/badge/language-Swift-17181A?style=flat-square&logo=swift&logoColor=F2F3F5" alt="Written in Swift">
+  <img src="https://img.shields.io/badge/dependencies-none-17181A?style=flat-square" alt="No dependencies">
+  <img src="https://img.shields.io/badge/menu--bar-app-17181A?style=flat-square" alt="Menu-bar app">
+</p>
+<p align="center"><b>English</b> &nbsp;·&nbsp; <a href="README.zh-CN.md">简体中文</a></p>
+<p align="center">
+  <a href="#why">Why</a> · <a href="#how-it-works">How it works</a> · <a href="#install">Install</a> ·
+  <a href="#settings">Settings</a> · <a href="#safety">Safety</a> · <a href="#how-it-compares">Compare</a> ·
+  <a href="#development">Development</a>
+</p>
+<p align="center"><img src="docs/images/lidstay-cover.png" alt="LidStay — keep the lid closed, keep the job running" width="800"></p>
 
 ---
 
-## The problem
+## Why
 
-You start a long job — a build, a download, a render, a batch run — and then you have to close the lid and leave.
+You start a long job — a build, a download, a render — then close the lid and leave. macOS
+sleeps on lid close. That is a clamshell event from the lid sensor to `IOPMrootDomain`, not
+idle sleep, so `caffeinate` and every IOKit power assertion cannot stop it: they hold off the
+idle timer, they never see the lid. The one switch that does override it is the kernel's
+`SleepDisabled` flag, set with `sudo pmset -a disablesleep 1`.
 
-macOS sleeps on lid close. This is not idle sleep; it is a hardware event fired by the lid sensor to `IOPMrootDomain`. That means **`caffeinate` cannot help**, and neither can any app built on IOKit power assertions (`KeepingYouAwake`, plain `Amphetamine` sessions, and friends). They hold off the idle timer. They do not see the lid.
-
-The one thing that does override it is the kernel's `SleepDisabled` flag:
-
-```sh
-sudo pmset -a disablesleep 1   # lid close no longer sleeps
-sudo pmset -a disablesleep 0   # back to normal
-```
-
-`disablesleep` is undocumented — it is not in `man pmset` — but it is present and working on Apple Silicon through macOS 27.
-
-## Why not just leave it on?
-
-Because a MacBook that never sleeps inside a bag has no airflow and no way to stop. It gets hot and it drains flat. That is the failure mode every "just disable sleep" guide warns about, and it is why this is a **menu bar toggle with an expiry**, not a system setting.
-
-LidGuard's position: **sleep is the correct default. Keep-awake is a deliberate, temporary exception that ends by itself.**
+`disablesleep` is undocumented — not in `man pmset` — but it is the only thing that works. Left
+on, it cooks a MacBook in a bag; so LidStay makes it a temporary, armed session, not a setting.
 
 ## How it works
 
 ```
-         click "Keep running when lid closes"
-idle ──────────────────────────────────────► armedOpen
-  ▲                                              │
-  │                                              │ lid closes (polled @2s)
-  │                                              ▼
-  │                                         armedClosed
-  │                                              │
-  └──────────────────────────────────────────────┘
+          Keep running when lid closes
+idle ─────────────────────────► armedOpen
+  ▲                             │
+  │                             │ lid closes (2 s poll)
+  │                             ▼
+  └───────────────────────────► armedClosed
      lid opens / battery floor / cancel / quit
 ```
 
-- **arm** → `sudo -n pmset -a disablesleep 1`, and write a state file
-- **disarm** → `sudo -n pmset -a disablesleep 0`, and remove it
-- Lid state is read from `IOPMrootDomain` → `AppleClamshellState` every 2 seconds
-- Battery level comes from `IOPSGetPowerSourcesInfo`
+- **Arm** → `sudo -n pmset -a disablesleep 1`, and write a marker file.
+- **Disarm** → `sudo -n pmset -a disablesleep 0`, and remove it.
+- The lid is read from `IOPMrootDomain` → `AppleClamshellState` every 2 seconds.
+- Battery and AC state come from `IOPSGetPowerSourcesInfo`.
 
-The state file records `armed-open` or `armed-closed`, so an external watchdog can tell *"the user just pressed the button"* apart from *"the app died after the lid already closed"*. Without that distinction a watchdog would disarm you the moment you arm, before the lid is even shut.
+The marker records `armed-open` or `armed-closed`, so a watchdog can tell "the user just pressed
+the button" from "the app died after the lid was shut"; otherwise it would disarm you on arm.
+
+Headless flags:
+
+```sh
+LidStay.app/Contents/MacOS/LidStay --status   # lid, SleepDisabled, battery, marker
+LidStay.app/Contents/MacOS/LidStay --arm
+LidStay.app/Contents/MacOS/LidStay --disarm
+```
 
 ## Install
 
-```sh
-git clone https://github.com/TTT-qq-TT/lidguard.git
-cd lidguard
-
-make            # build LidGuard.app into ./build
-make install    # copy to ~/Applications
-
-# one-time: install the scoped passwordless sudo rule
-./scripts/install.sh
-```
-
-`install.sh` writes exactly this to `/etc/sudoers.d/lidguard`:
-
-```
-<you> ALL=(root) NOPASSWD: /usr/bin/pmset -a disablesleep 1, /usr/bin/pmset -a disablesleep 0
-```
-
-sudoers matches arguments literally, with no wildcards, so the grant cannot be widened. It permits toggling lid-close sleep and nothing else. The script runs `visudo -cf` before installing, so a malformed rule can never break your sudo.
-
-Requires the Swift toolchain (`xcode-select --install`). No Xcode project, no dependencies, no notarization — the build is ad-hoc signed locally.
-
-## Usage
-
-1. Launch `~/Applications/LidGuard.app`. A laptop icon appears in the menu bar.
-2. About to close the lid with a job running → click the icon → **⚡ Keep running when lid closes**.
-   The icon changes to a bolt.
-3. Close the lid. Put it in your bag.
-4. Open the lid when you arrive — sleep is restored automatically.
-
-Right-click for a menu, or use the CLI:
+Requires macOS 13 or later and the Swift toolchain (`xcode-select --install`); no Xcode project.
 
 ```sh
-LidGuard.app/Contents/MacOS/LidGuard --status
-LidGuard.app/Contents/MacOS/LidGuard --arm
-LidGuard.app/Contents/MacOS/LidGuard --disarm
+git clone https://github.com/TTT-qq-TT/lidstay.git
+cd lidstay
+make install           # build and copy LidStay.app to ~/Applications
+./scripts/install.sh   # one-time: the scoped passwordless sudo rule
 ```
 
-`--status` output:
+> [!IMPORTANT]
+> **Why sudo?** macOS has no public API for "ignore the lid". The app flips the kernel's `SleepDisabled`
+> flag through exactly two literal commands — `pmset -a disablesleep 1` and `pmset -a disablesleep 0` —
+> granted by `install.sh`; sudoers matches arguments literally, so the rule cannot be widened.
 
+<details><summary>Other ways</summary>
+
+```sh
+make              # build LidStay.app into ./build
+make install      # copy it to ~/Applications
+make uninstall    # remove the app
+sudo rm /etc/sudoers.d/lidstay   # revoke the sudo rule
+rm -rf ~/.config/lidstay         # clear the state directory
 ```
-lid            : open
-sleepDisabled  : false
-battery        : 98% (battery)
-marker         : (none)
-```
+
+If the app is armed when you uninstall, disarm first (`--disarm`) or run
+`sudo pmset -a disablesleep 0`.
+</details>
+
+## Settings
+
+Open **Settings…** (⌘,) from the menu; the menu itself stays small: two status lines, the action,
+battery floor, Settings, Quit.
+
+<p align="center"><img src="docs/images/settings-en.png" alt="LidStay Settings: General, Permission, Language, About" width="560"></p>
+
+- **General** — Launch at login, and the same battery floor as the menu (10–30%).
+- **Permission** — a read-only status row; when the sudoers rule is missing it shows the fix.
+- **Language** — System, English, or 简体中文. Applies immediately.
+- **About** — version and repository.
 
 ## Safety
 
-| Rail | What it does |
+| Symptom | Fix |
 |---|---|
-| **Lid-open auto-off** | `AppleClamshellState` Yes→No disarms immediately |
-| **Battery floor** | Disarms at or below 15% (configurable 10–30%) when off AC |
-| **Quit disarms** | Quitting the app while armed restores sleep |
-| **Reboot clears** | `disablesleep` is a runtime flag, not persisted |
-| **Crash watchdog** | The `armed-open`/`armed-closed` marker lets an external watcher finish the job if the app dies |
+| App died while armed | `sudo pmset -a disablesleep 0` |
+| Keep-awake fails to arm | `./scripts/install.sh` |
+| Left it armed with the lid open | `--disarm`, or just close and open the lid |
 
-Two rules still apply, and no app can enforce them for you:
+Glyphs: `laptopcomputer` idle · `bolt.fill` armed · `bolt.slash` cancel.
 
-- **Never leave an armed, closed MacBook in a bag for hours on battery.** The battery floor helps, not saves.
-- **Prefer AC when you can.** On AC many MacBooks already stay awake with the lid closed — check before assuming you need this at all.
+<details><summary>Does it work on Apple Silicon?</summary>
 
-## Do you even need this?
+Yes. It is a kernel flag, not a hardware trick; if Apple ever removes it, arming fails safely.
+</details>
 
-Worth testing first. On some MacBooks running macOS with `sleep 0` on AC, closing the lid already does not sleep the machine. Check with:
+<details><summary>Is it safe to leave the MacBook in a bag?</summary>
 
-```sh
-pmset -g log | grep -i "Clamshell Sleep"
-```
+For a trip, yes: it ends on lid open, and at the battery floor. Never leave it armed and closed for hours.
+</details>
 
-If every `Clamshell Sleep` line says `Using Batt` and none say `Using AC`, then on AC you are already fine and LidGuard is only useful on battery.
+<details><summary>What if the app crashes while armed?</summary>
+
+`disablesleep` stays set. The `armed-closed` marker lets a watchdog finish the job; at the
+keyboard, `sudo pmset -a disablesleep 0` restores sleep, and a reboot clears it.
+</details>
 
 ## How it compares
 
-| | LidGuard | Sleepless | Amphetamine | `caffeinate` |
+| | LidStay | Sleepless | Amphetamine | `caffeinate` |
 |---|:---:|:---:|:---:|:---:|
-| Survives lid close | ✅ | ✅ | ⚠️ | ❌ |
-| Ends by itself | ✅ lid opens | ✅ timer | manual | ✅ on process exit |
+| Survives lid close | ✅ | ✅ | ⚠️ helper | ❌ |
+| Ends by itself | ✅ lid opens | ✅ timer | ❌ manual | ✅ process exit |
 | Battery floor | ✅ | ✅ | ✅ | ❌ |
 | Open source | ✅ MIT | ✅ MIT | ❌ | Apple |
-| Handles the "just arm, lid still open" race | ✅ | n/a | n/a | n/a |
+| Arm-then-close race | ✅ | n/a | n/a | n/a |
 
-The mechanism is the same as every project in this space — `pmset disablesleep`. What LidGuard adds is the **carry-trip session model**: arm on demand, expire on lid-open, with a state file a watchdog can reason about.
+*As of 2026-11-12. Peer claims come from their READMEs, not from independent testing.*
 
-Related projects worth reading: [Sleepless](https://github.com/Aboudjem/Sleepless), [awake](https://github.com/pistachionet/awake), [Awayke](https://github.com/daemonphantom/Awayke), [lid-awake](https://github.com/austinginder/lid-awake), [Amphetamine](https://github.com/x74353/Amphetamine).
+The mechanism is the same everywhere here: `pmset disablesleep`; LidStay adds the carry-trip session.
 
-## Uninstall
-
-```sh
-make uninstall
-sudo rm /etc/sudoers.d/lidguard
-rm -rf ~/.config/lidguard
-```
-
-If the app is armed when you uninstall, disarm first (`--disarm`) or run `sudo pmset -a disablesleep 0`.
-
-## Layout
-
-```
-Sources/LidGuardApp.swift    the whole app, one file (~330 lines)
-scripts/install.sh           scoped sudoers rule
-Makefile                     build / install / run / clean / lint
-AGENTS.md                    working agreement for this repo
-.harness/                    specs, verification profiles, check scripts
-```
+Related: [Sleepless](https://github.com/Aboudjem/Sleepless),
+[awake](https://github.com/pistachionet/awake), [Awayke](https://github.com/daemonphantom/Awayke),
+[lid-awake](https://github.com/austinginder/lid-awake), [Amphetamine](https://github.com/x74353/Amphetamine).
 
 ## Development
 
-The repo uses [TauLoop](https://github.com/TTT-qq-TT/tau-loop) for spec-driven
-work. Start at `AGENTS.md`, then read `.harness/memory.md`. Anything that
-changes behavior opens a numbered spec under `.harness/specs/` first; docs and
-mechanical edits do not.
-
 ```sh
-make lint                    # swiftc -typecheck, seconds
-make build && make run       # build and launch
-make install                 # copy to ~/Applications
-bash .harness/hooks/verify.sh .   # doc freshness + task state
+make lint                        # swiftc -typecheck, seconds
+make build && make run           # build and launch
+bash .harness/hooks/verify.sh .  # doc freshness + task state
 ```
 
-`build/` is ignored — never commit a compiled bundle.
+```
+Sources/            the app, split into focused files
+scripts/install.sh  scoped sudoers rule
+Makefile            build / install / run / clean / lint
+.harness/           specs, verification profiles, check scripts
+```
+
+The repo uses [TauLoop](https://github.com/TTT-qq-TT/tau-loop) for spec-driven work: start at
+`AGENTS.md`, then `.harness/memory.md`. Behavior changes open a numbered spec first; `build/`
+is ignored — never commit a compiled bundle.
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).

@@ -19,6 +19,7 @@ build/
 .harness/report.md
 .harness/failure-log.md
 .harness/handoffs/
+.harness/notes/
 .harness/specs/*
 !.harness/specs/README.md
 !.harness/specs/TEMPLATE.md

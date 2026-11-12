@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Install the scoped passwordless sudo rule LidGuard needs.
+# Install the scoped passwordless sudo rule LidStay needs.
 #
 # It grants EXACTLY two commands and nothing else:
 #   /usr/bin/pmset -a disablesleep 1
@@ -9,11 +9,11 @@
 # by appending flags. `pmset restoredefaults`, `pmset sleep 0`, etc. all still
 # require a password.
 #
-# Undo with: sudo rm /etc/sudoers.d/lidguard
+# Undo with: sudo rm /etc/sudoers.d/lidstay
 
 set -euo pipefail
 
-DEST="/etc/sudoers.d/lidguard"
+DEST="/etc/sudoers.d/lidstay"
 ME="$(id -un)"
 
 if [ -f "$DEST" ]; then

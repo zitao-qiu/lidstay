@@ -15,13 +15,13 @@
 - Build the bundle: `make build`
 - Exercise the state machine headlessly:
   ```sh
-  ./build/LidGuard.app/Contents/MacOS/LidGuard --status   # expect lid/sleepDisabled/battery/marker
-  ./build/LidGuard.app/Contents/MacOS/LidGuard --arm      # expect "armed"
-  ./build/LidGuard.app/Contents/MacOS/LidGuard --status   # expect sleepDisabled: true
-  ./build/LidGuard.app/Contents/MacOS/LidGuard --disarm   # expect "disarmed"
-  ./build/LidGuard.app/Contents/MacOS/LidGuard --status   # expect sleepDisabled: false, marker: (none)
+  ./build/LidStay.app/Contents/MacOS/LidStay --status   # expect lid/sleepDisabled/battery/marker
+  ./build/LidStay.app/Contents/MacOS/LidStay --arm      # expect "armed"
+  ./build/LidStay.app/Contents/MacOS/LidStay --status   # expect sleepDisabled: true
+  ./build/LidStay.app/Contents/MacOS/LidStay --disarm   # expect "disarmed"
+  ./build/LidStay.app/Contents/MacOS/LidStay --status   # expect sleepDisabled: false, marker: (none)
   ```
-- Lint the generated plist: `plutil -lint build/LidGuard.app/Contents/Info.plist`
+- Lint the generated plist: `plutil -lint build/LidStay.app/Contents/Info.plist`
 - Run `.harness/hooks/pre-closeout.sh` when hook entrypoints are installed.
 - Confirm no build artifacts are staged: `git status --short` must not list `build/`.
 - Restore the machine to `SleepDisabled = No` before ending the session.

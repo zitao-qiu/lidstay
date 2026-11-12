@@ -17,6 +17,33 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Build artifacts (`build/`, `*.app/`) and harness sandbox state are now
   explicitly ignored, so a `git add -A` cannot publish a compiled binary.
 
+## [1.1.0] - 2026-11-12
+
+### Added
+
+- Settings window (⌘,) with grouped cards: Launch at login, battery floor,
+  permission status, language, and About.
+- Runtime language switch — System, English, 简体中文 — applied immediately, no
+  restart. Every user-facing string goes through one lookup table.
+- Launch at login, registered through `SMAppService`.
+- Permission status row that checks the `sudoers` rule without side effects and
+  shows the exact one-line fix when it is missing.
+
+### Changed
+
+- The dropdown menu is cleaner: SF Symbols instead of emoji, no explanatory
+  subtitles, `Settings…` (⌘,) added, and the armed state now reads
+  `Armed · waiting for the lid` / `Running · lid closed`.
+- The single 326-line source file is split into focused files under `Sources/`
+  (`LidStayApp.swift`, `Guard.swift`, `SystemProbe.swift`, `L10n.swift`,
+  `MenuContent.swift`, `SettingsView.swift`), with the comment load cut to under
+  10% of non-blank lines.
+- Both READMEs rewritten around the product: shorter, bilingual, with a designed
+  mark and cover image.
+- Project renamed from LidGuard to LidStay: new app name, bundle id
+  `io.github.lidstay.app`, state directory `~/.config/lidstay`, and `sudoers`
+  file `/etc/sudoers.d/lidstay`. No behavior change beyond the v1.1.0 work.
+
 ## [1.0.0] - 2026-11-12
 
 ### Added

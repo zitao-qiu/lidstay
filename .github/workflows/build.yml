@@ -22,5 +22,5 @@ jobs:
 
       - name: Smoke test the CLI entry point
         run: |
-          ./build/LidGuard.app/Contents/MacOS/LidGuard --status
-          plutil -lint build/LidGuard.app/Contents/Info.plist
+          ./build/LidStay.app/Contents/MacOS/LidStay --status
+          plutil -lint build/LidStay.app/Contents/Info.plist
