@@ -1,4 +1,24 @@
+# ── Build artifacts (never publish) ────────────────────────────────
 build/
-.DS_Store
-*.xcuserstate
+*.app/
 *.dSYM/
+
+# ── macOS ──────────────────────────────────────────────────────────
+.DS_Store
+
+# ── TauLoop enrollment marker ──────────────────────────────────────
+.harness-workflow
+
+# ── Harness sandbox state ──────────────────────────────────────────
+# These are this working copy's live state, not part of the published
+# skeleton. `tau init` regenerates the skeleton for a fresh clone; the
+# published surface is brief.md, verification.md, verification-profiles/,
+# hooks/, tools/, templates/, and specs/{README.md,TEMPLATE.md}.
+.harness/memory.md
+.harness/plan.md
+.harness/report.md
+.harness/failure-log.md
+.harness/handoffs/
+.harness/specs/*
+!.harness/specs/README.md
+!.harness/specs/TEMPLATE.md

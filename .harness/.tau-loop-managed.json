@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "tools": {
+    ".harness/hooks/pre-closeout.py": {
+      "sha256": "d14d505c225d2631b40e8b6f1dd0c0c9a3ab21f858c755112b0c876c1f14e051"
+    },
+    ".harness/hooks/pre-closeout.sh": {
+      "sha256": "19cdf0f3daf975ea40fc29ba4e1a0489afd4b02eb6c2a83cdc356d17ed47d8bb"
+    },
+    ".harness/hooks/pre-task.py": {
+      "sha256": "336a94a1e3555fff3487ae4e032de1ef44d15eb1fb0eb3d0635e91d4103e6e3b"
+    },
+    ".harness/hooks/pre-task.sh": {
+      "sha256": "192d865ff3b3678c76139d6b42a66d1ef55153a4c268ba530ef1c4736b30cc67"
+    },
+    ".harness/hooks/verify.py": {
+      "sha256": "d239edd337de612674b9d4f43f9b5fe3ab3378f497f00c47c0159b35a2ab7564"
+    },
+    ".harness/hooks/verify.sh": {
+      "sha256": "30521c8694762df40b4dee7c8ab3b2b4ed0b9a7bf8cafadf1b02b8d4f1c8ed63"
+    },
+    ".harness/templates/debug-triage.md": {
+      "sha256": "a98880b45b062fcafff0ff2916b1e9151281bf7aa3b51b6fd2581ed1a6e49022"
+    },
+    ".harness/templates/long-running.md": {
+      "sha256": "8ee43ee98c753bf24643b9a3fdc53ec70373126fe4d2efa83db51b81d70950ad"
+    },
+    ".harness/templates/shift-agent.md": {
+      "sha256": "597cbc900d44e03d2202319e8bff5b8d82dee974afcf1d6c4a7963b57a548181"
+    },
+    ".harness/tools/check_doc_freshness.py": {
+      "sha256": "0a583cfac86a17cc135ea36bee58fc1a863110bb4a61fe6fceefc14dcbe37538"
+    },
+    ".harness/tools/check_task_state.py": {
+      "sha256": "fea03e2722bce6af8abeb68b95f37fd1c866ce658b01a16d9e1a481eee4d299d"
+    }
+  }
+}
