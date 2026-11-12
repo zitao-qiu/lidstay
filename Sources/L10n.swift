@@ -40,7 +40,7 @@ enum Str {
         case .copied: ("Copied", "已拷贝")
         case .systemLanguage: ("System", "跟随系统")
         case .appTitle: ("LidStay Settings", "LidStay 设置")
-        case .repoURL: ("github.com/TTT-qq-TT/lidstay", "github.com/TTT-qq-TT/lidstay")
+        case .repoURL: ("github.com/zitao-qiu/lidstay", "github.com/zitao-qiu/lidstay")
         case .loginUnavailable: ("Unavailable for this build", "当前构建不可用")
         case .cannotArmTitle: ("Could not arm", "无法启用")
         case .cannotArmBody: ("Missing sudoers rule — run scripts/install.sh", "缺少 sudo 权限规则，请先运行 scripts/install.sh")

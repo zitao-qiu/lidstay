@@ -112,7 +112,7 @@ struct SettingsView: View {
                 .font(.system(size: 13, weight: .semibold))
                 .textSelection(.enabled)
             Spacer(minLength: 12)
-            Text(.init("[\(l10n.t(.repoURL))](https://github.com/TTT-qq-TT/lidstay)"))
+            Text(.init("[\(l10n.t(.repoURL))](https://github.com/zitao-qiu/lidstay)"))
                 .font(.system(size: 12))
                 .textSelection(.enabled)
         }

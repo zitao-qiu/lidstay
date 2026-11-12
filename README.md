@@ -1,5 +1,5 @@
 <p align="center"><img src="docs/images/lidstay-mark.png" alt="" width="96" height="96"></p>
-<h1 align="center"><a href="https://github.com/TTT-qq-TT/lidstay">LidStay</a></h1>
+<h1 align="center"><a href="https://github.com/zitao-qiu/lidstay">LidStay</a></h1>
 <p align="center"><strong>Keep the lid closed. Keep the job running.</strong></p>
 <p align="center">
   A macOS menu-bar app that holds off lid-close sleep for one deliberate trip,<br>
@@ -66,7 +66,7 @@ LidStay.app/Contents/MacOS/LidStay --disarm
 Requires macOS 13 or later and the Swift toolchain (`xcode-select --install`); no Xcode project.
 
 ```sh
-git clone https://github.com/TTT-qq-TT/lidstay.git
+git clone https://github.com/zitao-qiu/lidstay.git
 cd lidstay
 make install           # build and copy LidStay.app to ~/Applications
 ./scripts/install.sh   # one-time: the scoped passwordless sudo rule
@@ -162,7 +162,7 @@ Makefile            build / install / run / clean / lint
 .harness/           specs, verification profiles, check scripts
 ```
 
-The repo uses [TauLoop](https://github.com/TTT-qq-TT/tau-loop) for spec-driven work: start at
+The repo uses [TauLoop](https://github.com/zitao-qiu/tau-loop) for spec-driven work: start at
 `AGENTS.md`, then `.harness/memory.md`. Behavior changes open a numbered spec first; `build/`
 is ignored — never commit a compiled bundle.
 

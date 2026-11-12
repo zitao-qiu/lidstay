@@ -1,5 +1,5 @@
 <p align="center"><img src="docs/images/lidstay-mark.png" alt="" width="96" height="96"></p>
-<h1 align="center"><a href="https://github.com/TTT-qq-TT/lidstay">LidStay</a></h1>
+<h1 align="center"><a href="https://github.com/zitao-qiu/lidstay">LidStay</a></h1>
 <p align="center"><strong>合盖不睡，任务不停。</strong></p>
 <p align="center">
   一个 macOS 菜单栏小工具：为一次「带走」临时挡住合盖睡眠，<br>
@@ -66,7 +66,7 @@ LidStay.app/Contents/MacOS/LidStay --disarm
 需要 macOS 13 或更新版本，以及 Swift 工具链（`xcode-select --install`）；没有 Xcode 工程。
 
 ```sh
-git clone https://github.com/TTT-qq-TT/lidstay.git
+git clone https://github.com/zitao-qiu/lidstay.git
 cd lidstay
 make install           # 构建并复制 LidStay.app 到 ~/Applications
 ./scripts/install.sh   # 一次性：安装最小权限的免密 sudo 规则
@@ -162,7 +162,7 @@ Makefile            build / install / run / clean / lint
 .harness/           spec、验证配置、检查脚本
 ```
 
-仓库用 [TauLoop](https://github.com/TTT-qq-TT/tau-loop) 做 spec 驱动的开发：先看 `AGENTS.md`，
+仓库用 [TauLoop](https://github.com/zitao-qiu/tau-loop) 做 spec 驱动的开发：先看 `AGENTS.md`，
 再读 `.harness/memory.md`。会改变行为的改动先开编号 spec；`build/` 已被忽略。
 
 ## 许可证
