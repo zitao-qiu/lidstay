@@ -1,7 +1,7 @@
 // LidGuard — keep a MacBook running with the lid closed, on demand.
 //
 // The problem this solves:
-//   You have a long job running (a coding agent, a build, a download) and you
+//   You have a long job running (a build, a download, a render) and you
 //   need to close the lid and put the machine in a bag. macOS sleeps on lid
 //   close unless you have an external display + power + keyboard attached.
 //   `caffeinate` cannot help: it holds an IOKit power assertion, and lid-close
@@ -40,7 +40,7 @@
 //
 // Requires a scoped sudoers rule — see scripts/install.sh.
 //
-// MIT License. https://github.com/<you>/lidguard
+// MIT License. https://github.com/TTT-qq-TT/lidguard
 
 import SwiftUI
 import AppKit

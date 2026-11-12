@@ -15,7 +15,7 @@ lid close → keep running (only while armed)
 
 ## The problem
 
-You start a long job — a coding agent, a build, a download, a render — and then you have to close the lid and leave.
+You start a long job — a build, a download, a render, a batch run — and then you have to close the lid and leave.
 
 macOS sleeps on lid close. This is not idle sleep; it is a hardware event fired by the lid sensor to `IOPMrootDomain`. That means **`caffeinate` cannot help**, and neither can any app built on IOKit power assertions (`KeepingYouAwake`, plain `Amphetamine` sessions, and friends). They hold off the idle timer. They do not see the lid.
 
@@ -58,7 +58,7 @@ The state file records `armed-open` or `armed-closed`, so an external watchdog c
 ## Install
 
 ```sh
-git clone https://github.com/<you>/lidguard.git
+git clone https://github.com/TTT-qq-TT/lidguard.git
 cd lidguard
 
 make            # build LidGuard.app into ./build

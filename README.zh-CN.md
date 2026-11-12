@@ -15,7 +15,7 @@
 
 ## 它解决什么问题
 
-你起了一个长任务——coding agent、编译、下载、渲染——然后你必须合盖走人。
+你起了一个长任务——编译、下载、渲染、批处理——然后你必须合盖走人。
 
 macOS 合盖就睡。这**不是** idle sleep，而是盖子传感器发给 `IOPMrootDomain` 的硬件事件。所以 **`caffeinate` 帮不上忙**，任何基于 IOKit power assertion 的 app（`KeepingYouAwake`、普通 Amphetamine session 等）同样帮不上——它们只能挡住 idle 计时器，根本看不到盖子。
 
@@ -58,7 +58,7 @@ idle ─────────────────────────
 ## 安装
 
 ```sh
-git clone https://github.com/<you>/lidguard.git
+git clone https://github.com/TTT-qq-TT/lidguard.git
 cd lidguard
 
 make            # 构建 LidGuard.app 到 ./build
