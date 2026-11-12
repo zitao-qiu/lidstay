@@ -158,7 +158,25 @@ If the app is armed when you uninstall, disarm first (`--disarm`) or run `sudo p
 Sources/LidGuardApp.swift    the whole app, one file (~330 lines)
 scripts/install.sh           scoped sudoers rule
 Makefile                     build / install / run / clean / lint
+AGENTS.md                    working agreement for this repo
+.harness/                    specs, verification profiles, check scripts
 ```
+
+## Development
+
+The repo uses [TauLoop](https://github.com/TTT-qq-TT/tau-loop) for spec-driven
+work. Start at `AGENTS.md`, then read `.harness/memory.md`. Anything that
+changes behavior opens a numbered spec under `.harness/specs/` first; docs and
+mechanical edits do not.
+
+```sh
+make lint                    # swiftc -typecheck, seconds
+make build && make run       # build and launch
+make install                 # copy to ~/Applications
+bash .harness/hooks/verify.sh .   # doc freshness + task state
+```
+
+`build/` is ignored — never commit a compiled bundle.
 
 ## License
 

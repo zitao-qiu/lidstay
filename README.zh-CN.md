@@ -148,7 +148,24 @@ rm -rf ~/.config/lidguard
 Sources/LidGuardApp.swift    整个 app，单文件（约 330 行）
 scripts/install.sh           最小权限 sudoers 规则
 Makefile                     build / install / run / clean / lint
+AGENTS.md                    本仓库的工作约定
+.harness/                    spec、验证配置、检查脚本
 ```
+
+## 开发
+
+仓库用 [TauLoop](https://github.com/TTT-qq-TT/tau-loop) 做 spec 驱动的开发。
+先看 `AGENTS.md`，再读 `.harness/memory.md`。会改变行为的改动先在
+`.harness/specs/` 下开一个编号 spec；纯文档和机械性改动不用。
+
+```sh
+make lint                    # swiftc -typecheck，几秒钟
+make build && make run       # 构建并启动
+make install                 # 复制到 ~/Applications
+bash .harness/hooks/verify.sh .   # 文档新鲜度 + 任务状态检查
+```
+
+`build/` 已被忽略——不要提交编译产物。
 
 ## 许可证
 
